@@ -19,11 +19,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.entities.ActorPlayer;
 import com.mygdx.game.entities.ActorStar;
 import com.mygdx.game.entities.BallEntity;
 import com.mygdx.game.entities.FloorEntity;
+
+import java.util.ArrayList;
 
 
 public class GameScreen extends BaseScreen{
@@ -36,7 +39,13 @@ public class GameScreen extends BaseScreen{
     private FloorEntity floor;
     private BallEntity ball;
     private ActorStar star;
+    /////////////////////////////////////////////
+    private Texture textura;
+    private Animation animation;
+    private float tiempo;
+    private ArrayList<Texture> frames = new ArrayList<Texture>();
 
+    /////////////////////////////////////////////////////////////
     private Music bgMusic;
     private Sound coinSound;
     private Sound deathSound;
@@ -68,7 +77,6 @@ public class GameScreen extends BaseScreen{
                 if (colision(contact, "pingu", "ball")){
                     player.setPinguVivo(false);
                     deathSound.play();
-                    player.setTexture((Texture) juego.getManager().get("pinguM.png"));
 
                     stage.addAction(
                             Actions.sequence(
@@ -105,6 +113,11 @@ public class GameScreen extends BaseScreen{
 
             }
         });
+        frames.add((Texture)juego.getManager().get("pingu.png"));
+        frames.add((Texture)juego.getManager().get("pinguTV.png"));
+        frames.add((Texture)juego.getManager().get("pinguT.png"));
+        animation=new Animation<>(1,frames);
+        tiempo=0f;
     }
 
     @Override
@@ -127,15 +140,25 @@ public class GameScreen extends BaseScreen{
             ball.getBody().setAngularVelocity(0);
             contactoBola=false;
         }
-        if(!player.isPinguVivo()){
-            player.getBody().setLinearVelocity(0,0);
-            player.getBody().setAngularVelocity(0);
-            bgMusic.stop();
-            puntos=0;
-        }
         label.setText("Score :  "+puntos);
         if(puntos>MainJuego.getPuntuacion()){
             MainJuego.setPuntuacion(puntos);
+        }
+        tiempo+=Gdx.graphics.getDeltaTime();
+       if((player.getBody().getLinearVelocity().x>0.8)&& player.isPinguVivo()){
+            //textura=(Texture) animation.getKeyFrame(tiempo,true);
+            player.setTexture((Texture)juego.getManager().get("pinguT.png"));
+        }else if((player.getBody().getLinearVelocity().x<0.8)&&(player.getBody().getLinearVelocity().x>-0.8)&& player.isPinguVivo()){
+            player.setTexture((Texture)juego.getManager().get("pinguC.png"));
+        }else{
+           player.setTexture((Texture)juego.getManager().get("pinguTV.png"));
+       }
+        if(!player.isPinguVivo()){
+            player.getBody().setLinearVelocity(0,0);
+            player.getBody().setAngularVelocity(0);
+            player.setTexture((Texture) juego.getManager().get("pinguM.png"));
+            bgMusic.stop();
+            puntos=0;
         }
     }
 

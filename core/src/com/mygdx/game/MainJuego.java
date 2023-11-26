@@ -30,6 +30,10 @@ public class MainJuego extends Game {
 	@Override
 	public void create () {
 		manager = new AssetManager();
+		manager.load("pingu.png",Texture.class);
+		manager.load("pingu2.png",Texture.class);
+		manager.load("pinguT.png",Texture.class);
+		manager.load("pinguTV.png",Texture.class);
 		manager.load("pinguM.png",Texture.class);
 		manager.load("bola.png",Texture.class);
 		manager.load("star.png",Texture.class);
